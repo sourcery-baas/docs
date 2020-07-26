@@ -67,8 +67,6 @@ You must replace <code>API_KEY</code> with your personal API key.
 
 # Streams
 
-Something something
-
 ## Create a Stream
 
 ```ruby
