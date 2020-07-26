@@ -21,221 +21,309 @@ code_clipboard: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the Sourcery API!
 
 We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
 
 # Authentication
 
 > To authorize, use this code:
 
 ```ruby
-require 'kittn'
+require 'sourcery'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+api = Sourcery::APIClient.authorize!('API_KEY')
 ```
 
 ```python
-import kittn
+import sourcery
 
-api = kittn.authorize('meowmeowmeow')
+api = sourcery.authorize('API_KEY')
 ```
 
 ```shell
 # With shell, you can just pass the correct header with each request
 curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+  -H "Authorization: API_KEY"
 ```
 
 ```javascript
-const kittn = require('kittn');
+const sourcery = require('sourcery');
 
-let api = kittn.authorize('meowmeowmeow');
+let api = sourcery.authorize('API_KEY');
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> Make sure to replace `API_KEY` with your API key.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+Sourcery uses API keys to allow access to the API. You can register a new API key at our [developer portal](https://event-sourcery.co/developers).
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+Sourcery expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
-`Authorization: meowmeowmeow`
+`Authorization: API_KEY`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>API_KEY</code> with your personal API key.
 </aside>
 
-# Kittens
+# Streams
 
-## Get All Kittens
+Something something
+
+## Create a Stream
 
 ```ruby
-require 'kittn'
+require 'sourcery'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
+api = Sourcery::APIClient.authorize!('API_KEY')
+api.streams.create('orders', { id: 'uuid', item: 'string', qty: 'number' })
 ```
 
 ```python
-import kittn
+import sourcery
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
+api = sourcery.authorize('API_KEY')
+api.streams.create('orders', { id: 'uuid', item: 'string', qty: 'number' })
 ```
-
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl -X POST "https://event-sourcery.co/api/streams"
+  -H "Authorization: API_KEY"
 ```
 
 ```javascript
-const kittn = require('kittn');
+const sourcery = require('sourcery');
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+let api = sourcery.authorize('API_KEY');
+api.streams.create('orders', { id: 'uuid', item: 'string', qty: 'number' });
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "id": "9b8cc8f7-0019-4275-b065-e0fac9871ac0",
+  "name": "orders",
+  "schema": {
+    "id": "uuid",
+    "item": "string",
+    "qty": "number"
+  }
 }
 ```
 
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+This endpoint creates a new Stream. Streams allow you to start feeding data to your backend.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET https://event-sourcery.co/api/streams`
+
+## Get a Specific Stream
+
+```ruby
+require 'sourcery'
+
+api = Sourcery::APIClient.authorize!('API_KEY')
+api.streams.get('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
+```
+
+```python
+import sourcery
+
+api = sourcery.authorize('API_KEY')
+api.streams.get('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
+```
+
+```shell
+curl "https://event-sourcery.co/api/streams/84cb9811-2281-4ee2-97ce-6ebdcb45ecf5"
+  -H "Authorization: API_KEY"
+```
+
+```javascript
+const sourcery = require('sourcery');
+
+let api = sourcery.authorize('API_KEY');
+let max = api.streams.get('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5');
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": "84cb9811-2281-4ee2-97ce-6ebdcb45ecf5",
+  "name": "orders",
+  "schema": {
+    "id": "uuid",
+    "item": "string",
+    "qty": "number"
+  }
+}
+```
+
+This endpoint retrieves data for a specific stream.
+
+### HTTP Request
+
+`GET https://event-sourcery.co/streams/<id>`
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
+id | The id of the stream to retrieve
 
-## Delete a Specific Kitten
+## Delete a Specific Stream
 
 ```ruby
-require 'kittn'
+require 'sourcery'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
+api = Sourcery::APIClient.authorize!('API_KEY')
+api.streams.delete('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
 ```
 
 ```python
-import kittn
+import sourcery
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
+api = sourcery.authorize('API_KEY')
+api.streams.delete('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
 ```
 
 ```shell
-curl "http://example.com/api/kittens/2"
+curl "https://event-sourcery.co/api/streams/2"
   -X DELETE
-  -H "Authorization: meowmeowmeow"
+  -H "Authorization: API_KEY"
 ```
 
 ```javascript
-const kittn = require('kittn');
+const sourcery = require('sourcery');
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
+let api = sourcery.authorize('API_KEY');
+let max = api.streams.delete('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5');
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
+  "id": "84cb9811-2281-4ee2-97ce-6ebdcb45ecf5",
+  "name": "orders",
   "deleted" : ":("
 }
 ```
 
-This endpoint deletes a specific kitten.
+This endpoint deletes a specific stream.
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
+`DELETE https://event-sourcery.co/streams/<id>`
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to delete
+id | The id of the stream to delete
 
+# Stream Processors
+
+## Create a Stream Processor
+
+```ruby
+require 'sourcery'
+
+api = Sourcery::APIClient.authorize!('API_KEY')
+api.processors.create('order-validation', { name: 'order-validation', from: 'orders' })
+```
+
+```python
+import sourcery
+
+api = sourcery.authorize('API_KEY')
+api.processors.create('orders', { name: 'order-validation', from: 'orders' })
+```
+
+```shell
+curl "https://event-sourcery.co/api/processors"
+  -X POST
+  -d '{ "name": "order-validation", "from": "orders" }'
+  -H "Content-Type: application/json"
+  -H "Authorization: API_KEY"
+```
+
+```javascript
+const sourcery = require('sourcery');
+
+let api = sourcery.authorize('API_KEY');
+api.processors.create('orders', { name: 'order-validation', from: 'orders' });
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": "9b8cc8f7-0019-4275-b065-e0fac9871ac0",
+  "name": "orders-validation",
+  "from": "orders"
+}
+```
+
+This endpoint creates a new Stream Processor. A Processor is how you implement stateless business logic that let you transform and combine data from existing streams into new streams of data.
+
+### HTTP Request
+
+`POST https://event-sourcery.co/api/processors`
+
+# Views
+
+## Create a View
+
+```ruby
+require 'sourcery'
+
+api = Sourcery::APIClient.authorize!('API_KEY')
+api.views.create('pending-orders', { from: 'orders' })
+```
+
+```python
+import sourcery
+
+api = sourcery.authorize('API_KEY')
+api.views.create('pending-orders', { from: 'orders' })
+```
+```shell
+curl "https://event-sourcery.co/api/views"
+  -X POST
+  -d '{"from": "orders"}'
+  -H "Content-Type: application/json"
+  -H "Authorization: API_KEY"
+```
+
+```javascript
+const sourcery = require('sourcery');
+
+let api = sourcery.authorize('API_KEY');
+api.views.create('pending-orders', { from: 'orders' });
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "id": "9b8cc8f7-0019-4275-b065-e0fac9871ac0",
+  "name": "pending-orders",
+  "from": "orders",
+  "groupBy": "id",
+  "filter": { "status": "pending" }
+}
+```
+
+This endpoint creates a new View. Views allow you to get read representations of your data, so you can query to populate your UI.
+
+### HTTP Request
+
+`POST https://event-sourcery.co/api/views`
+
+# Suscriptions
+
+## Create a Suscription
+
+# Sinks
+
+## Create a Sink
