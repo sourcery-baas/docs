@@ -185,7 +185,7 @@ api.streams.delete('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
 ```
 
 ```shell
-curl "https://event-sourcery.co/api/streams/2"
+curl "https://event-sourcery.co/api/streams/84cb9811-2281-4ee2-97ce-6ebdcb45ecf5"
   -X DELETE
   -H "Authorization: API_KEY"
 ```
