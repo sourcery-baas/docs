@@ -536,28 +536,30 @@ You must replace <code>API_KEY</code> with your personal API key.
     </span><span class="nl">"invalid-orders"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"qty"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$gt"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h1 id='views'>Views</h1><h2 id='create-a-view'>Create a View</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://event-sourcery.co/api/views"</span>
+</span></code></pre></div><h1 id='views'>Views</h1>
+<p>Views allow you to get read representations of your data, so you can query them to get your read representations.</p>
+<h2 id='create-a-view'>Create a View</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://event-sourcery.co/api/views"</span>
   <span class="nt">-X</span> POST
-  <span class="nt">-d</span> <span class="s1">'{"from": "orders"}'</span>
+  <span class="nt">-d</span> <span class="s1">'{"name": "orders-view", "from": "orders"}'</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
   <span class="nt">-H</span> <span class="s2">"Authorization: API_KEY"</span>
 </code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">sourcery</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">sourcery</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">sourcery</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">API_KEY</span><span class="dl">'</span><span class="p">);</span>
-<span class="nx">api</span><span class="p">.</span><span class="nx">views</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="dl">'</span><span class="s1">pending-orders</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="na">from</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orders</span><span class="dl">'</span> <span class="p">});</span>
+<span class="nx">api</span><span class="p">.</span><span class="nx">views</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="dl">'</span><span class="s1">pending-orders</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orders-view</span><span class="dl">'</span><span class="p">,</span> <span class="na">from</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orders</span><span class="dl">'</span> <span class="p">});</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
   </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9b8cc8f7-0019-4275-b065-e0fac9871ac0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending-orders"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"groupBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"id"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"filter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders-view"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p>This endpoint creates a new View. Views allow you to get read representations of your data, so you can query them to get your read representations.</p>
+<p>This endpoint creates a basic View, which simply exposes the latest state of your streamed entity by id. This will expose an endpoint, that you can query like this:</p>
+
+<p><code>GET https://event-sourcery.co/api/views/{stream-name}/{entity-id}</code></p>
 <h3 id='http-request-5'>HTTP Request</h3>
 <p><code>POST https://event-sourcery.co/api/views</code></p>
 <h1 id='suscriptions'>Suscriptions</h1><h2 id='create-a-suscription'>Create a Suscription</h2><h1 id='sinks'>Sinks</h1><h2 id='create-a-sink'>Create a Sink</h2><h1 id='errors'>Errors</h1>
