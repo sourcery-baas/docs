@@ -3,8 +3,6 @@ title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
-  - python
   - javascript
 
 toc_footers:
@@ -28,18 +26,6 @@ We have language bindings in Shell, Ruby, Python, and JavaScript! You can view c
 # Authentication
 
 > To authorize, use this code:
-
-```ruby
-require 'sourcery'
-
-api = Sourcery::APIClient.authorize!('API_KEY')
-```
-
-```python
-import sourcery
-
-api = sourcery.authorize('API_KEY')
-```
 
 ```shell
 # With shell, you can just pass the correct header with each request
@@ -69,19 +55,6 @@ You must replace <code>API_KEY</code> with your personal API key.
 
 ## Create a Stream
 
-```ruby
-require 'sourcery'
-
-api = Sourcery::APIClient.authorize!('API_KEY')
-api.streams.create('orders', { id: 'uuid', item: 'string', qty: 'number' })
-```
-
-```python
-import sourcery
-
-api = sourcery.authorize('API_KEY')
-api.streams.create('orders', { id: 'uuid', item: 'string', qty: 'number' })
-```
 ```shell
 curl -X POST "https://event-sourcery.co/api/streams"
   -H "Authorization: API_KEY"
@@ -112,23 +85,9 @@ This endpoint creates a new Stream. Streams allow you to start feeding data to y
 
 ### HTTP Request
 
-`GET https://event-sourcery.co/api/streams`
+`POST https://event-sourcery.co/api/streams`
 
 ## Get a Specific Stream
-
-```ruby
-require 'sourcery'
-
-api = Sourcery::APIClient.authorize!('API_KEY')
-api.streams.get('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
-```
-
-```python
-import sourcery
-
-api = sourcery.authorize('API_KEY')
-api.streams.get('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
-```
 
 ```shell
 curl "https://event-sourcery.co/api/streams/84cb9811-2281-4ee2-97ce-6ebdcb45ecf5"
@@ -170,20 +129,6 @@ id | The id of the stream to retrieve
 
 ## Delete a Specific Stream
 
-```ruby
-require 'sourcery'
-
-api = Sourcery::APIClient.authorize!('API_KEY')
-api.streams.delete('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
-```
-
-```python
-import sourcery
-
-api = sourcery.authorize('API_KEY')
-api.streams.delete('84cb9811-2281-4ee2-97ce-6ebdcb45ecf5')
-```
-
 ```shell
 curl "https://event-sourcery.co/api/streams/84cb9811-2281-4ee2-97ce-6ebdcb45ecf5"
   -X DELETE
@@ -223,20 +168,6 @@ id | The id of the stream to delete
 
 ## Create a Stream Processor
 
-```ruby
-require 'sourcery'
-
-api = Sourcery::APIClient.authorize!('API_KEY')
-api.processors.create('order-validation', { name: 'order-validation', from: 'orders' })
-```
-
-```python
-import sourcery
-
-api = sourcery.authorize('API_KEY')
-api.processors.create('orders', { name: 'order-validation', from: 'orders' })
-```
-
 ```shell
 curl "https://event-sourcery.co/api/processors"
   -X POST
@@ -268,23 +199,42 @@ This endpoint creates a new Stream Processor. A Processor is how you implement s
 
 `POST https://event-sourcery.co/api/processors`
 
+### Filtering
+
+Use filtering to get a new stream with data that meets certain criteria.
+
+> Filtering payload example.
+
+```json
+{
+  "name": "order-validation",
+  "from": "orders",
+  "filter":  { "status": "pending" },
+  "to": "pending-orders",
+}
+```
+
+### Branching
+
+A branching processor splits one stream in one or more new streams according to specified predicates
+
+> Example of processor that splits `orders` stream into valid and invalid order streams, assuming orders on an item quantity bigger than 10 is invalid.
+
+```json
+{
+  "name": "order-validation",
+  "from": "orders",
+  "branch":  {
+    "valid-orders": { "qty": { "$lte": 10 } },
+    "invalid-orders": { "qty": { "$gt": 10 } }
+  }
+}
+```
+
 # Views
 
 ## Create a View
 
-```ruby
-require 'sourcery'
-
-api = Sourcery::APIClient.authorize!('API_KEY')
-api.views.create('pending-orders', { from: 'orders' })
-```
-
-```python
-import sourcery
-
-api = sourcery.authorize('API_KEY')
-api.views.create('pending-orders', { from: 'orders' })
-```
 ```shell
 curl "https://event-sourcery.co/api/views"
   -X POST
@@ -312,7 +262,7 @@ api.views.create('pending-orders', { from: 'orders' });
 }
 ```
 
-This endpoint creates a new View. Views allow you to get read representations of your data, so you can query to populate your UI.
+This endpoint creates a new View. Views allow you to get read representations of your data, so you can query them to get your read representations.
 
 ### HTTP Request
 
