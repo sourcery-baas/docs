@@ -233,12 +233,14 @@ A branching processor splits one stream in one or more new streams according to 
 
 # Views
 
+Views allow you to get read representations of your data, so you can query them to get your read representations.
+
 ## Create a View
 
 ```shell
 curl "https://event-sourcery.co/api/views"
   -X POST
-  -d '{"from": "orders"}'
+  -d '{"name": "orders-view", "from": "orders"}'
   -H "Content-Type: application/json"
   -H "Authorization: API_KEY"
 ```
@@ -247,7 +249,7 @@ curl "https://event-sourcery.co/api/views"
 const sourcery = require('sourcery');
 
 let api = sourcery.authorize('API_KEY');
-api.views.create('pending-orders', { from: 'orders' });
+api.views.create('pending-orders', { name: 'orders-view', from: 'orders' });
 ```
 
 > The above command returns JSON structured like this:
@@ -255,14 +257,14 @@ api.views.create('pending-orders', { from: 'orders' });
 ```json
 {
   "id": "9b8cc8f7-0019-4275-b065-e0fac9871ac0",
-  "name": "pending-orders",
-  "from": "orders",
-  "groupBy": "id",
-  "filter": { "status": "pending" }
+  "name": "orders-view",
+  "from": "orders"
 }
 ```
 
-This endpoint creates a new View. Views allow you to get read representations of your data, so you can query them to get your read representations.
+This endpoint creates a basic View, which simply exposes the latest state of your streamed entity by id. This will expose an endpoint, that you can query like this:
+
+`GET https://event-sourcery.co/api/views/{stream-name}/{entity-id}`
 
 ### HTTP Request
 
