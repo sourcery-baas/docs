@@ -330,7 +330,13 @@
             <a href="#stream-processors" class="toc-h1 toc-link" data-title="Stream Processors">Stream Processors</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#create-a-stream-processor" class="toc-h2 toc-link" data-title="Create a Stream Processor">Create a Stream Processor</a>
+                    <a href="#create-a-filtering-processor" class="toc-h2 toc-link" data-title="Create a Filtering Processor">Create a Filtering Processor</a>
+                  </li>
+                  <li>
+                    <a href="#create-a-split-processor" class="toc-h2 toc-link" data-title="Create a Split Processor">Create a Split Processor</a>
+                  </li>
+                  <li>
+                    <a href="#create-a-join-processor" class="toc-h2 toc-link" data-title="Create a Join Processor">Create a Join Processor</a>
                   </li>
               </ul>
           </li>
@@ -338,23 +344,10 @@
             <a href="#views" class="toc-h1 toc-link" data-title="Views">Views</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#create-a-view" class="toc-h2 toc-link" data-title="Create a View">Create a View</a>
+                    <a href="#create-a-basic-view" class="toc-h2 toc-link" data-title="Create a Basic View">Create a Basic View</a>
                   </li>
-              </ul>
-          </li>
-          <li>
-            <a href="#suscriptions" class="toc-h1 toc-link" data-title="Suscriptions">Suscriptions</a>
-              <ul class="toc-list-h2">
                   <li>
-                    <a href="#create-a-suscription" class="toc-h2 toc-link" data-title="Create a Suscription">Create a Suscription</a>
-                  </li>
-              </ul>
-          </li>
-          <li>
-            <a href="#sinks" class="toc-h1 toc-link" data-title="Sinks">Sinks</a>
-              <ul class="toc-list-h2">
-                  <li>
-                    <a href="#create-a-sink" class="toc-h2 toc-link" data-title="Create a Sink">Create a Sink</a>
+                    <a href="#create-an-aggregated-view" class="toc-h2 toc-link" data-title="Create an Aggregated view">Create an Aggregated view</a>
                   </li>
               </ul>
           </li>
@@ -381,9 +374,6 @@
 <div class="highlight"><pre class="highlight shell tab-shell"><code><span class="c"># With shell, you can just pass the correct header with each request</span>
 curl <span class="s2">"api_endpoint_here"</span>
   <span class="nt">-H</span> <span class="s2">"Authorization: API_KEY"</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">sourcery</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">sourcery</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">sourcery</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">API_KEY</span><span class="dl">'</span><span class="p">);</span>
 </code></pre></div>
 <blockquote>
 <p>Make sure to replace <code>API_KEY</code> with your API key.</p>
@@ -488,42 +478,28 @@ You must replace <code>API_KEY</code> with your personal API key.
 <td>The id of the stream to delete</td>
 </tr>
 </tbody></table>
-<h1 id='stream-processors'>Stream Processors</h1><h2 id='create-a-stream-processor'>Create a Stream Processor</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://event-sourcery.co/api/processors"</span>
+<h1 id='stream-processors'>Stream Processors</h1>
+<p>A Processor is how you implement business logic that let you transform and combine data from existing streams into new streams.</p>
+<h2 id='create-a-filtering-processor'>Create a Filtering Processor</h2>
+<p>Use filtering to filter data from existing stream, and get a new stream where data meets certain criteria</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://event-sourcery.co/api/processors"</span>
   <span class="nt">-X</span> POST
-  <span class="nt">-d</span> <span class="s1">'{ "name": "order-validation", "from": "orders" }'</span>
+  <span class="nt">-d</span> <span class="s1">'{ "name": "order-validation", "from": "orders", "filter": { "status": "pending" } }'</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
   <span class="nt">-H</span> <span class="s2">"Authorization: API_KEY"</span>
 </code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">sourcery</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">sourcery</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">sourcery</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">API_KEY</span><span class="dl">'</span><span class="p">);</span>
-<span class="nx">api</span><span class="p">.</span><span class="nx">processors</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="dl">'</span><span class="s1">orders</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">order-validation</span><span class="dl">'</span><span class="p">,</span> <span class="na">from</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orders</span><span class="dl">'</span> <span class="p">});</span>
-</code></pre></div>
-<blockquote>
-<p>The above command returns JSON structured like this:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9b8cc8f7-0019-4275-b065-e0fac9871ac0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders-validation"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div>
-<p>This endpoint creates a new Stream Processor. A Processor is how you implement stateless business logic that let you transform and combine data from existing streams into new streams of data.</p>
-<h3 id='http-request-4'>HTTP Request</h3>
+<span class="nx">api</span><span class="p">.</span><span class="nx">processors</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="dl">'</span><span class="s1">orders</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">order-validation</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">from</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orders</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">filter</span><span class="p">:</span>  <span class="p">{</span> <span class="dl">"</span><span class="s2">status</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">pending</span><span class="dl">"</span> <span class="p">}</span>
+  <span class="nl">to</span><span class="p">:</span> <span class="dl">"</span><span class="s2">pending-orders</span><span class="dl">"</span>
+<span class="p">});</span>
+</code></pre></div><h3 id='http-request-4'>HTTP Request</h3>
 <p><code>POST https://event-sourcery.co/api/processors</code></p>
-<h3 id='filtering'>Filtering</h3>
-<p>Use filtering to get a new stream with data that meets certain criteria.</p>
-
-<blockquote>
-<p>Filtering payload example.</p>
-</blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"order-validation"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"filter"</span><span class="p">:</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nl">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="w"> </span><span class="p">},</span><span class="w">
-  </span><span class="nl">"to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending-orders"</span><span class="p">,</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='branching'>Branching</h3>
-<p>A branching processor splits one stream in one or more new streams according to specified predicates</p>
+<h2 id='create-a-split-processor'>Create a Split Processor</h2>
+<p>A processor can split one stream in one or more new streams according to list of predicates</p>
 
 <blockquote>
 <p>Example of processor that splits <code>orders</code> stream into valid and invalid order streams, assuming orders on an item quantity bigger than 10 is invalid.</p>
@@ -536,9 +512,26 @@ You must replace <code>API_KEY</code> with your personal API key.
     </span><span class="nl">"invalid-orders"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"qty"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"$gt"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
+</span></code></pre></div><h2 id='create-a-join-processor'>Create a Join Processor</h2>
+<p>Joins data together to create enriched versions of data. You can join streams with other streams, but can also join streams with views.</p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders-with-customer"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"join"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"with"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customers-view"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customerId"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
 </span></code></pre></div><h1 id='views'>Views</h1>
 <p>Views allow you to get read representations of your data, so you can query them to get your read representations.</p>
-<h2 id='create-a-view'>Create a View</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://event-sourcery.co/api/views"</span>
+
+<p>A view describes aggregated state.</p>
+<h2 id='create-a-basic-view'>Create a Basic View</h2>
+<p>This is the simplest form of a view, it will simply represent the latest state of a streamed entity. It will group data by id.
+After created it will expose an endpoint, that you can query like this:</p>
+
+<p><code>GET https://event-sourcery.co/api/views/{stream-name}/{entity-id}</code></p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://event-sourcery.co/api/views"</span>
   <span class="nt">-X</span> POST
   <span class="nt">-d</span> <span class="s1">'{"name": "orders-view", "from": "orders"}'</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
@@ -547,22 +540,24 @@ You must replace <code>API_KEY</code> with your personal API key.
 
 <span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">sourcery</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">API_KEY</span><span class="dl">'</span><span class="p">);</span>
 <span class="nx">api</span><span class="p">.</span><span class="nx">views</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="dl">'</span><span class="s1">pending-orders</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orders-view</span><span class="dl">'</span><span class="p">,</span> <span class="na">from</span><span class="p">:</span> <span class="dl">'</span><span class="s1">orders</span><span class="dl">'</span> <span class="p">});</span>
-</code></pre></div>
+</code></pre></div><h3 id='http-request-5'>HTTP Request</h3>
+<p><code>POST https://event-sourcery.co/api/views</code></p>
+<h2 id='create-an-aggregated-view'>Create an Aggregated view</h2>
+<p>An aggregated view is one that will create a more complex state representation from a stream. You can specify the field that you want to use for grouping and will also allow you to express custom aggregation logic.</p>
+
 <blockquote>
-<p>The above command returns JSON structured like this:</p>
+<p>Example of a view request that would return the price total for all orders made by a customer</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9b8cc8f7-0019-4275-b065-e0fac9871ac0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders-view"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders"</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customer-total"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"groupBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customerId"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"aggregate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"init"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"function"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$acc + ($qty + $price)"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div>
-<p>This endpoint creates a basic View, which simply exposes the latest state of your streamed entity by id. This will expose an endpoint, that you can query like this:</p>
-
-<p><code>GET https://event-sourcery.co/api/views/{stream-name}/{entity-id}</code></p>
-<h3 id='http-request-5'>HTTP Request</h3>
-<p><code>POST https://event-sourcery.co/api/views</code></p>
-<h1 id='suscriptions'>Suscriptions</h1><h2 id='create-a-suscription'>Create a Suscription</h2><h1 id='sinks'>Sinks</h1><h2 id='create-a-sink'>Create a Sink</h2><h1 id='errors'>Errors</h1>
+</span></code></pre></div><h1 id='errors'>Errors</h1>
 <aside class="notice">
 This error section is stored in a separate file in <code>includes/_errors.md</code>. Slate allows you to optionally separate out your docs into many files...just save them to the <code>includes</code> folder and add them to the top of your <code>index.md</code>'s frontmatter. Files are included in the order listed.
 </aside>
